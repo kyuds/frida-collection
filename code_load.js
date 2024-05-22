@@ -1,8 +1,15 @@
 // Native libs
+// Note that there is the standard "dlopen" system call, but also "android_dlopen_ext". This is used in android internals.
 function dlopen_load() {
     Interceptor.attach(Module.findExportByName(null, "dlopen"), {
         onEnter: function(args) {
             console.warn("dlopen: " + Memory.readCString(args[0]))
+        }
+    })
+    Interceptor.attach(Module.findExportByName(null, "android_dlopen_ext"), {
+        onEnter: function(args) {
+            var fname = Memory.readCString(args[0])
+            console.warn("(android) dlopen: " + fname)
         }
     })
 }
